@@ -22,8 +22,33 @@ app.set('view engine', 'handlebars')
 
 app.use(express.static('public'))
 
-app.get('/', (req, res) => {
-    res.render('home')    
+
+app.get('/users/create', (req, res) => {
+    res.render('adduser')
+})
+
+// cadastrar usuários
+app.post('/users/create', async (req, res) => {
+    const name = req.body.name
+    const occupation = req.body.occupation
+    let newsletter = req.body.newsletter
+
+    if (newsletter === 'on') {
+        newsletter = true        
+    }else{
+        newsletter = false
+    }
+
+    await User.create({name, occupation, newsletter})
+
+    res.redirect('/')
+})
+
+// listar todos usuários
+app.get('/', async (req, res) => {
+    const users = await User.findAll({raw: true})
+    console.log(users)
+    res.render('home', {users: users})    
 })
 
 
