@@ -44,7 +44,22 @@ app.post('/users/create', async (req, res) => {
     res.redirect('/')
 })
 
-// listar todos usuários
+app.get('/users/:id',async (req, res) => {
+    const id = req.params.id
+
+    const user = await User.findOne({ raw: true, where: {id: id}})
+
+    res.render('userview', { user } )
+})
+
+app.post('/users/delete/:id', async (req, res) =>{
+    const id = req.params.id
+
+    await User.destroy({ where: { id: id } })
+
+    res.redirect('/')
+})
+
 app.get('/', async (req, res) => {
     const users = await User.findAll({raw: true})
     console.log(users)
